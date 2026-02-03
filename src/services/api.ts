@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// API base URL - backend runs on port 6868
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:6868/api/v1';
+// API base URL - using Next.js environment variables
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:6868/api/v1';
 
 // Create axios instance with default config
 export const apiClient = axios.create({

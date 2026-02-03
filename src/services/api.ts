@@ -63,6 +63,7 @@ export interface Event {
   status: 'draft' | 'published' | 'cancelled' | 'completed';
   totalCapacity: number;
   soldCount: number;
+  slug: string; // Add slug field
 }
 
 export interface SeatAvailability {
@@ -136,10 +137,19 @@ export const eventApi = {
   },
 
   /**
-   * Get single event by ID
+   * Get single event by ID or slug
    */
-  async getEvent(eventId: string): Promise<{ data: Event }> {
-    return apiClient.get(`/events/${eventId}`);
+  async getEvent(identifier: string): Promise<{ data: Event }> {
+    // Check if identifier is a MongoDB ObjectId format
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(identifier);
+    
+    if (isObjectId) {
+      // Legacy ID-based lookup
+      return apiClient.get(`/events/${identifier}`);
+    } else {
+      // Slug-based lookup
+      return apiClient.get(`/events/slug/${identifier}`);
+    }
   },
 
   /**

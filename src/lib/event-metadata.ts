@@ -1,15 +1,16 @@
-import { eventApi } from '../../services/api';
+import { eventApi } from '../services/api';
 
 interface Event {
   _id: string;
   title: string;
   description: string;
   imageUrl?: string;
+  slug: string;
 }
 
-async function getEvent(id: string) {
+async function getEvent(slug: string) {
   try {
-    const response = await eventApi.getEvent(id);
+    const response = await eventApi.getEvent(slug);
     return response.data as Event;
   } catch (error) {
     console.error('Error fetching event:', error);
@@ -38,7 +39,7 @@ export async function generateEventMetadata({ params }: MetadataProps) {
       title: event.title,
       description: event.description,
       type: 'event',
-      url: `https://your-domain.com/events/${event._id}`,
+      url: `https://your-domain.com/events/${event.slug}`,
       images: event.imageUrl ? [event.imageUrl] : undefined,
     },
     twitter: {

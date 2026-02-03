@@ -19,6 +19,7 @@ interface Event {
   eventType: string;
   status: string;
   imageUrl?: string;
+  slug: string; // Add slug to interface
 }
 
 async function getEvents() {
@@ -151,7 +152,7 @@ function EventCard({ event }: { event: Event }) {
         </div>
 
         <Link 
-          href={`/events/${event._id}`}
+          href={`/events/${event.slug}`}
           className={`w-full text-center font-medium py-3 px-4 rounded-lg transition-colors ${
             isSoldOut
               ? 'bg-gray-100 text-gray-400 cursor-not-allowed'

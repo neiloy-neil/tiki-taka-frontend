@@ -6,10 +6,9 @@ import { useRouter } from 'next/navigation';
 import { apiClient } from '../services/api';
 
 interface User {
-  id: string;
+  _id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   role: 'user' | 'organizer' | 'admin';
 }
 
@@ -60,8 +59,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(userData);
     
     // Redirect based on user role
-    if (userData.role === 'admin' || userData.role === 'organizer') {
+    if (userData.role === 'admin') {
       router.push('/admin');
+    } else if (userData.role === 'organizer') {
+      router.push('/organizer/dashboard');
     } else {
       router.push('/events');
     }

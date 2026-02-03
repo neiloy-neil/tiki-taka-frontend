@@ -59,7 +59,7 @@ export interface Event {
   doorOpenTime?: string;
   eventType: 'concert' | 'sports' | 'theater' | 'conference' | 'other';
   imageUrl?: string;
-  pricingZones: Record<string, { name: string; price: number; currency: 'USD' }>;
+  pricingZones: Record<string, { name: string; price: number; currency: 'USD'; available: number }>;
   status: 'draft' | 'published' | 'cancelled' | 'completed';
   totalCapacity: number;
   soldCount: number;
@@ -201,20 +201,19 @@ export const orderApi = {
    */
   async createCheckoutIntent(data: {
     eventId: string;
-    seatIds: string[];
+    tickets: { type: string; quantity: number }[];
     customerInfo: {
       email: string;
       firstName: string;
       lastName: string;
       phoneNumber?: string;
     };
-    sessionId?: string;
   }): Promise<{
     data: {
       orderId: string;
       orderNumber: string;
       paymentStatus: string;
-      paymentIntentClientSecret?: string;
+      paymentIntentClientSecret: string;
       breakdown: {
         subtotal: number;
         fees: number;

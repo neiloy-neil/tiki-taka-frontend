@@ -191,6 +191,7 @@ export default async function EventDetailsPage({ params }: { params: { slug: str
                       currency={zone.currency}
                       available={zone.available}
                       eventId={event._id}
+                      eventSlug={params.slug}
                     />
                   ))}
                 </div>
@@ -257,6 +258,7 @@ interface TicketTypeCardProps {
   currency: string;
   available: number;
   eventId: string;
+  eventSlug: string;
 }
 
 function TicketTypeCard({ 
@@ -264,7 +266,7 @@ function TicketTypeCard({
   price, 
   currency, 
   available, 
-  eventId 
+  eventSlug 
 }: TicketTypeCardProps) {
   const isSoldOut = available <= 0;
 
@@ -291,10 +293,10 @@ function TicketTypeCard({
             </button>
           ) : (
             <Link
-              href={`/checkout?event=${eventId}&type=${encodeURIComponent(name)}`}
+              href={`/checkout/${eventSlug}`}
               className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
             >
-              Select Tickets
+              Buy Tickets
             </Link>
           )}
         </div>

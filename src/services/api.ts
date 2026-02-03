@@ -41,29 +41,66 @@ apiClient.interceptors.response.use(
 // API Types
 export interface Event {
   _id: string;
-  venueId: {
-    _id: string;
-    name: string;
-    address: {
-      street: string;
-      city: string;
-      state: string;
-      zipCode: string;
-      country: string;
-    };
-  };
   title: string;
+  slug: string;
   description: string;
-  eventDate: string;
-  eventEndDate?: string;
-  doorOpenTime?: string;
   eventType: 'concert' | 'sports' | 'theater' | 'conference' | 'other';
-  imageUrl?: string;
-  pricingZones: Record<string, { name: string; price: number; currency: 'USD'; available: number }>;
-  status: 'draft' | 'published' | 'cancelled' | 'completed';
+  imageUrl: string;
+  startDate: string;
+  endDate: string;
+  doorTime: string;
+  location: {
+    venue: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+  };
+  ticketTypes: TicketType[];
+  status: 'draft' | 'pending' | 'approved' | 'published' | 'cancelled' | 'completed' | 'rejected';
   totalCapacity: number;
   soldCount: number;
-  slug: string; // Add slug field
+  organizer: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TicketType {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  availableQuantity: number;
+  saleStartDate: string;
+  saleEndDate: string;
+  isActive: boolean;
+}
+
+export interface Order {
+  _id: string;
+  event: Event;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  ticketTypes: Array<{
+    ticketType: TicketType;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  status: 'pending' | 'paid' | 'cancelled' | 'refunded';
+  stripeSessionId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SeatAvailability {
@@ -201,6 +238,28 @@ export const seatApi = {
    */
   async getSeatPlan(eventId: string): Promise<{ data: SeatPlanResponse }> {
     return apiClient.get(`/seats/event/${eventId}/plan`);
+  },
+};
+
+// Ticket API Methods
+export const ticketApi = {
+  async getTickets(eventId: string): Promise<{ data: TicketType[] }> {
+    return apiClient.get(`/tickets/event/${eventId}`);
+  },
+};
+
+// Checkout API Methods
+export const checkoutApi = {
+  async createSession(data: {
+    eventId: string;
+    lineItems: Array<{
+      ticketTypeId: string;
+      quantity: number;
+      price: number;
+      name: string;
+    }>;
+  }): Promise<{ data: { url: string } }> {
+    return apiClient.post('/checkout/create-session', data);
   },
 };
 
